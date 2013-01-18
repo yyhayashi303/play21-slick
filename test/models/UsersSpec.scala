@@ -14,7 +14,7 @@ import play.api.test.Helpers._
  */
 class UsersSpec extends Specification {
 
-  implicit val database = Database.forDataSource(DB.getDataSource())
+//  implicit val database = Database.forDataSource(DB.getDataSource())
   "Users" should {
     "findAll" in {
       running(FakeApplication()) {
