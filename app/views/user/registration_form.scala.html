@@ -1,0 +1,33 @@
+@(userForm: Form[User], users: Seq[User])
+@import helper._
+
+@main("User Registration") {
+@form(routes.UserController.register, 'method -> "POST", 'class -> "form-horizontal") {
+<fieldset>
+    <div class="control-group">
+        <label class="control-label" for="firstName">FirstName</label>
+        <div class="controls">
+            <input class="span5 focused" type="text" id="firstName" name="firstName" placeholder="FirstName" required="true">
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="lastName">LasttName</label>
+        <div class="controls">
+            <input class="span5 focused" type="text" id="lastName" name="lastName" placeholder="LastName" required="true">
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="email">Email</label>
+        <div class="controls">
+            <input class="span5 focused" type="email" id="email" name="email" placeholder="Email">
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls">
+            <button type="submit" class="btn btn-primary">Register</button>
+        </div>
+    </div>
+</fieldset>
+}
+@views.html.user.list(users)
+}

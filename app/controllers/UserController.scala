@@ -1,41 +1,45 @@
 package controllers
 
-import play.api._
 import play.api.mvc._
-import models.{Users, User}
-import scala.slick.driver.MySQLDriver.simple._
-import play.api.Play.current
-import play.api.db.DB
+import play.api.data._
+import play.api.data.Forms._
+import play.api.data.validation.Constraints._
+import models._
+import common.BaseModel
+import slick.session.Session
 
 /**
- * Date: 13/01/15
- * Time: 18:35
+ * Date: 13/02/12
+ * Time: 16:36
  */
 object UserController extends Controller {
-  implicit lazy val database = Database.forDataSource(DB.getDataSource())
+  val userForm = Form(
+    mapping(
+      "firstName" -> text.verifying(nonEmpty),
+      "lastName" -> text.verifying(nonEmpty),
+      "email" -> text.verifying(nonEmpty)
+    ) {
+      (firstName, lastName, email) => User(-1, firstName, lastName, email)
+    } {
+      u => Some(u.firstName, u.lastName, u.email)
+    }
+  )
 
-  def findAll = Action {
-    val list = Users.findAll()
-    list.foreach(println)
-    Ok("ok")
+  def register = Action {implicit request =>
+    userForm.bindFromRequest.fold(
+      errors => BadRequest,
+      implicit user => {
+        BaseModel.withSession {implicit session: Session =>
+          Users.insert(user)
+        }
+        Redirect(routes.UserController.registerForm)
+      }
+    )
   }
-  def find = Action {
-    val user = Users.find(1)
-    println(user)
-    Ok(user.toString)
-  }
-  def insert = Action {
-    val user = User(0, "star", "backs", "star_backs@gmail.com")
-    Users.insert(user)
-    Ok("ok")
-  }
-  def update = Action {
-    val user = User(1, "yy", "hayashi303", "test@gmail.com")
-    Users.update(user)
-    Ok("ok")
-  }
-  def delete = Action {
-    Users.delete(1)
-    Ok("ok")
+  def registerForm = Action {
+    val users = BaseModel.withSession {implicit session: Session =>
+      Users.findAll
+    }
+    Ok(views.html.user.registration_form(userForm, users))
   }
 }

@@ -4,11 +4,10 @@
 
 # Home page
 GET     /                           controllers.Application.index
-GET     /user/findAll               controllers.UserController.findAll
-GET     /user/find                  controllers.UserController.find
-GET     /user/insert                controllers.UserController.insert
-GET     /user/update                controllers.UserController.update
-GET     /user/delete                controllers.UserController.delete
+
+# User
+GET     /user/register              controllers.UserController.register
+GET     /user/registerForm          controllers.UserController.registerForm
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
